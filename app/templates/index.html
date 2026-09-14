@@ -3,20 +3,63 @@
 {% block title %}Home | Simcha Planner{% endblock %}
 
 {% block content %}
-  <section aria-labelledby="starter-heading">
-    <p class="eyebrow">MCON-233 · Sprint 1</p>
-    <h1 id="starter-heading">Simcha Planner homepage starter</h1>
-    <p>
-      Your team will replace this placeholder with an accessible public
-      homepage that satisfies the Story and acceptance criteria in the README.
-    </p>
-    <aside class="starter-note" aria-labelledby="team-task-heading">
-      <h2 id="team-task-heading">Your team task</h2>
-      <p>
-        Use Jira to divide the Story into focused work. Develop on branches,
-        collaborate through pull requests, and merge only after review and a
-        successful build.
+  <section class="hero" aria-labelledby="hero-heading">
+    <div class="container">
+      <p class="eyebrow">Plan your simcha with less stress</p>
+      <h1 id="hero-heading">Simcha Planner</h1>
+      <p class="lead">
+        Keep your event details, checklist, timeline, and budget together, with
+        a planning assistant to help you think through what comes next.
       </p>
-    </aside>
+      <a class="button" href="#get-started">Start Planning</a>
+    </div>
+  </section>
+
+  <section id="features" class="section section-alt" aria-labelledby="features-heading">
+    <div class="container">
+      <h2 id="features-heading">What you can organize</h2>
+      <ul class="card-grid">
+        <li class="card">
+          <h3>Event details</h3>
+          <p>Record the date, venue, hosts, and guest count in one place.</p>
+        </li>
+        <li class="card">
+          <h3>Checklist and timeline</h3>
+          <p>Track what needs to be done and when, from first calls to the big day.</p>
+        </li>
+        <li class="card">
+          <h3>Budget</h3>
+          <p>Plan expenses and see where your money is going as costs come in.</p>
+        </li>
+        <li class="card">
+          <h3>Planning assistant</h3>
+          <p>Get focused suggestions to help you remember the details that matter.</p>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="simchas" class="section" aria-labelledby="simchas-heading">
+    <div class="container">
+      <h2 id="simchas-heading">Simchas we support</h2>
+      <ul class="tag-list">
+        <li>Bar and bat mitzvahs</li>
+        <li>Vorts</li>
+        <li>Sheva brachos</li>
+        <li>Community dinners</li>
+        <li>Birthday celebrations</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="get-started" class="section section-accent" aria-labelledby="get-started-heading">
+    <div class="container">
+      <h2 id="get-started-heading">How it works</h2>
+      <ol class="steps">
+        <li>Tell us about your event.</li>
+        <li>Build a checklist and timeline that fits it.</li>
+        <li>Track your budget as plans come together.</li>
+      </ol>
+    </div>
   </section>
 {% endblock %}
