@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Create an event | Simcha Planner{% endblock %}
+
+{% block content %}
+  <section class="section" aria-labelledby="new-event-heading">
+    <div class="container">
+      <h1 id="new-event-heading">Tell us about your simcha</h1>
+
+      {% if error %}
+        <div class="form-error" role="alert">
+          <p><strong>Please fix this:</strong> {{ error }}</p>
+        </div>
+      {% endif %}
+
+      <form method="post" action="{{ url_for('events.create_event') }}" class="event-form">
+        <div class="field">
+          <label for="event_type">Type of simcha</label>
+          <select id="event_type" name="event_type" required>
+            {% for value, label in event_types.items() %}
+              <option value="{{ value }}" {% if form.get('event_type') == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="event_date">Date</label>
+          <input id="event_date" name="event_date" type="date" required value="{{ form.get('event_date', '') }}" />
+        </div>
+
+        <div class="field">
+          <label for="guest_count">Number of guests</label>
+          <input id="guest_count" name="guest_count" type="number" min="1" required value="{{ form.get('guest_count', '') }}" />
+        </div>
+
+        <div class="field">
+          <label for="budget">Budget ($)</label>
+          <input id="budget" name="budget" type="number" min="0" step="0.01" required value="{{ form.get('budget', '') }}" />
+        </div>
+
+        <div class="field">
+          <label for="venue">Venue <span class="optional">(optional)</span></label>
+          <input id="venue" name="venue" type="text" value="{{ form.get('venue', '') }}" />
+        </div>
+
+        <div class="field">
+          <label for="theme">Theme <span class="optional">(optional)</span></label>
+          <input id="theme" name="theme" type="text" value="{{ form.get('theme', '') }}" />
+        </div>
+
+        <button type="submit" class="button">Create event</button>
+      </form>
+    </div>
+  </section>
+{% endblock %}

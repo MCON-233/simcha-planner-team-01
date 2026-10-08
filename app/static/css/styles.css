@@ -276,3 +276,88 @@ textarea:focus-visible,
     padding: 4.5rem 0;
   }
 }
+
+/* Event form and dashboard */
+
+.event-form {
+  display: grid;
+  gap: 1.25rem;
+  max-width: 32rem;
+}
+
+.field {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.field label {
+  font-weight: 700;
+}
+
+.optional {
+  color: var(--muted-ink);
+  font-weight: 400;
+}
+
+.field input,
+.field select {
+  padding: 0.6rem 0.75rem;
+  border: 1px solid #64748b;
+  border-radius: 0.375rem;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+}
+
+.event-form .button {
+  justify-self: start;
+  border: 0;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.form-error {
+  max-width: 32rem;
+  margin-bottom: 1.5rem;
+  padding: 0.75rem 1rem;
+  border-left: 0.35rem solid #a72e20;
+  background: #ffebe7;
+}
+
+.form-error p {
+  margin: 0;
+}
+
+.countdown {
+  margin-bottom: 0;
+  color: var(--accent-dark);
+  font-weight: 700;
+}
+
+.detail-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  gap: 1rem;
+  margin: 0;
+}
+
+.detail-list > div {
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: 0.375rem;
+  background: #fff;
+}
+
+.detail-list dt {
+  color: var(--muted-ink);
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.detail-list dd {
+  margin: 0.25rem 0 0;
+  font-size: 1.125rem;
+}

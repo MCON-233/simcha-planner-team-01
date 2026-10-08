@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}{{ event_type_label }} | Simcha Planner{% endblock %}
+
+{% block content %}
+  <section class="hero" aria-labelledby="dashboard-heading">
+    <div class="container">
+      <p class="eyebrow">Your event dashboard</p>
+      <h1 id="dashboard-heading">{{ event_type_label }}</h1>
+      <p class="lead countdown">
+        {% if days_left == 1 %}1 day{% else %}{{ days_left }} days{% endif %} to go
+      </p>
+    </div>
+  </section>
+
+  <section class="section section-alt" aria-labelledby="details-heading">
+    <div class="container">
+      <h2 id="details-heading">Event details</h2>
+      <dl class="detail-list">
+        <div><dt>Date</dt><dd>{{ event.event_date.strftime('%A, %B') }} {{ event.event_date.day }}, {{ event.event_date.year }}</dd></div>
+        <div><dt>Guests</dt><dd>{{ event.guest_count }}</dd></div>
+        <div><dt>Budget</dt><dd>${{ '{:,.2f}'.format(event.budget) }}</dd></div>
+        <div><dt>Venue</dt><dd>{{ event.venue or 'Not decided yet' }}</dd></div>
+        <div><dt>Theme</dt><dd>{{ event.theme or 'Not decided yet' }}</dd></div>
+      </dl>
+    </div>
+  </section>
+{% endblock %}

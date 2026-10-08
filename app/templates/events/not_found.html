@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}Event not found | Simcha Planner{% endblock %}
+
+{% block content %}
+  <section class="section" aria-labelledby="not-found-heading">
+    <div class="container">
+      <h1 id="not-found-heading">We could not find that event</h1>
+      <p class="lead">Check the link, or create a new event to start planning.</p>
+      <a class="button" href="{{ url_for('events.new_event') }}">Create an event</a>
+    </div>
+  </section>
+{% endblock %}
