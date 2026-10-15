@@ -70,3 +70,31 @@ def test_created_event_appears_in_my_events(client, service):
     client.post("/events", data=valid_form())
 
     assert len(service.list_events()) == 1
+
+
+# Fix my mistakes
+
+def test_zero_guests_shows_the_form_again_with_a_message(client):
+    response = client.post("/events", data=valid_form(guest_count="0"))
+
+    assert response.status_code == 400
+    assert "Guest count must be at least 1" in response.get_data(as_text=True)
+
+
+def test_invalid_input_keeps_what_the_host_typed(client):
+    response = client.post("/events", data=valid_form(guest_count="0", budget="2500"))
+
+    assert 'value="2500"' in response.get_data(as_text=True)
+
+
+def test_text_instead_of_a_number_shows_a_message(client):
+    response = client.post("/events", data=valid_form(guest_count="abc"))
+
+    assert response.status_code == 400
+    assert "Please enter a valid date, guest count, and budget." in response.get_data(as_text=True)
+
+
+def test_invalid_input_saves_nothing(client, service):
+    client.post("/events", data=valid_form(guest_count="0"))
+
+    assert service.list_events() == []
