@@ -1,6 +1,6 @@
 from datetime import date
 
-from flask import Blueprint, current_app, render_template
+from flask import Blueprint, current_app, redirect, render_template, request, url_for
 
 from .services.event_service import EventService
 
@@ -22,6 +22,23 @@ def event_service() -> EventService:
 def list_events():
     return render_template("events/list.html", events=event_service().list_events(),
                            labels=EVENT_TYPE_LABELS)
+
+
+@bp.get("/new")
+def new_event():
+    return render_template("events/new.html", labels=EVENT_TYPE_LABELS, form={})
+
+
+@bp.post("")
+def create_event():
+    form = request.form
+    event = event_service().create_event(
+        form.get("event_type", ""),
+        date.fromisoformat(form["event_date"]),
+        int(form["guest_count"]),
+        float(form["budget"]),
+    )
+    return redirect(url_for("events.show_event", event_id=event.id))
 
 
 @bp.get("/<int:event_id>")

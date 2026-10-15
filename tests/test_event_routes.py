@@ -37,3 +37,36 @@ def test_unknown_event_shows_not_found(client):
 
     assert response.status_code == 404
     assert "Event not found" in response.get_data(as_text=True)
+
+
+# Create an event
+
+def valid_form(**changes):
+    form = {
+        "event_type": "vort",
+        "event_date": future(10).isoformat(),
+        "guest_count": "50",
+        "budget": "1000",
+    }
+    form.update(changes)
+    return form
+
+
+def test_new_event_form_is_shown(client):
+    response = client.get("/events/new")
+
+    assert response.status_code == 200
+    assert 'name="event_date"' in response.get_data(as_text=True)
+
+
+def test_creating_an_event_redirects_to_its_page(client):
+    response = client.post("/events", data=valid_form())
+
+    assert response.status_code == 302
+    assert response.headers["Location"].startswith("/events/")
+
+
+def test_created_event_appears_in_my_events(client, service):
+    client.post("/events", data=valid_form())
+
+    assert len(service.list_events()) == 1
