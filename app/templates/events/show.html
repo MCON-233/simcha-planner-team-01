@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}{{ label }} | Simcha Planner{% endblock %}
+
+{% block content %}
+  <section class="section" aria-labelledby="event-heading">
+    <div class="container">
+      <p class="eyebrow">{{ days_left }} days to go</p>
+      <h1 id="event-heading">{{ label }}</h1>
+      <dl class="event-details">
+        <dt>Date</dt><dd>{{ event.event_date.strftime('%B') }} {{ event.event_date.day }}, {{ event.event_date.year }}</dd>
+        <dt>Guests</dt><dd>{{ event.guest_count }}</dd>
+        <dt>Budget</dt><dd>${{ '{:,.2f}'.format(event.budget) }}</dd>
+      </dl>
+      <p><a href="{{ url_for('events.list_events') }}">All my events</a></p>
+    </div>
+  </section>
+{% endblock %}

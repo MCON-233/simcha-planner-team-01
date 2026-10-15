@@ -276,3 +276,19 @@ textarea:focus-visible,
     padding: 4.5rem 0;
   }
 }
+
+/* Events */
+.event-details {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.5rem 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.event-details dt {
+  font-weight: 700;
+}
+
+.event-details dd {
+  margin: 0;
+}
