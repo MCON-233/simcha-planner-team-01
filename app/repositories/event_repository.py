@@ -16,6 +16,10 @@ class EventRepository(ABC):
     def all(self):
         """Return every saved event."""
 
+    @abstractmethod
+    def update(self, event):
+        """Replace the saved event that has this event's id, and return it."""
+
 
 class InMemoryEventRepository(EventRepository):
     """Keeps events in a dictionary. Fast, and forgets everything on restart."""
@@ -35,3 +39,7 @@ class InMemoryEventRepository(EventRepository):
 
     def all(self):
         return list(self._events.values())
+
+    def update(self, event):
+        self._events[event.id] = event
+        return event

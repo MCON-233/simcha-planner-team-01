@@ -10,21 +10,7 @@
         <p class="form-error" role="alert">{{ error }}</p>
       {% endif %}
       <form class="event-form" method="post" action="{{ url_for('events.create_event') }}">
-        <label for="event_type">Type of simcha</label>
-        <select id="event_type" name="event_type" required>
-          {% for value, label in labels.items() %}
-            <option value="{{ value }}" {% if form.get('event_type') == value %}selected{% endif %}>{{ label }}</option>
-          {% endfor %}
-        </select>
-
-        <label for="event_date">Date</label>
-        <input id="event_date" name="event_date" type="date" value="{{ form.get('event_date', '') }}" required />
-
-        <label for="guest_count">Number of guests</label>
-        <input id="guest_count" name="guest_count" type="number" min="1" value="{{ form.get('guest_count', '') }}" required />
-
-        <label for="budget">Budget ($)</label>
-        <input id="budget" name="budget" type="number" min="0" step="0.01" value="{{ form.get('budget', '') }}" required />
+        {% include "events/_fields.html" %}
 
         <button class="button" type="submit">Create event</button>
       </form>

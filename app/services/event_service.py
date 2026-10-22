@@ -15,3 +15,11 @@ class EventService:
 
     def list_events(self):
         return sorted(self._repository.all(), key=lambda event: event.event_date)
+
+    def update_event(self, event_id, event_type, event_date, guest_count, budget):
+        if self.get_event(event_id) is None:
+            return None
+        event = Event(event_type, event_date, guest_count, budget)   # rules: the Event's job
+        event.id = event_id
+        return self._repository.update(event)
+

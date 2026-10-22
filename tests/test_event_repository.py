@@ -47,3 +47,14 @@ def test_a_repository_must_implement_every_method():
 
     with pytest.raises(TypeError):
         Incomplete()
+
+
+def test_update_replaces_the_saved_event(repo, event):
+    saved = repo.add(event)
+    changed = Event("bat_mitzvah", date.today() + timedelta(days=60), guest_count=40, budget=0)
+    changed.id = saved.id
+
+    repo.update(changed)
+
+    assert repo.get(saved.id) is changed
+    assert repo.all() == [changed]

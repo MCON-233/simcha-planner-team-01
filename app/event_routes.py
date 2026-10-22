@@ -60,3 +60,45 @@ def show_event(event_id):
         return render_template("events/not_found.html"), 404
     return render_template("events/show.html", event=event, label=EVENT_TYPE_LABELS[event.event_type],
                            days_left=event.days_until_event(date.today()))
+
+
+
+def show_edit_form(event_id, form, error=None, status=200):
+    """Show the edit form, filled in with the event's current values or what the host typed."""
+    html = render_template("events/edit.html", labels=EVENT_TYPE_LABELS, event_id=event_id, form=form,
+                           error=error)
+    return html, status
+
+
+@bp.get("/<int:event_id>/edit")
+def edit_event(event_id):
+    event = event_service().get_event(event_id)
+    if event is None:
+        return render_template("events/not_found.html"), 404
+    return show_edit_form(event_id, {
+        "event_type": event.event_type,
+        "event_date": event.event_date.isoformat(),
+        "guest_count": event.guest_count,
+        "budget": event.budget,
+    })
+
+
+@bp.post("/<int:event_id>/edit")
+def update_event(event_id):
+    if event_service().get_event(event_id) is None:
+        return render_template("events/not_found.html"), 404
+
+    form = request.form
+    try:
+        event_date = date.fromisoformat(form["event_date"])
+        guest_count = int(form["guest_count"])
+        budget = float(form["budget"])
+    except (KeyError, ValueError):
+        return show_edit_form(event_id, form, "Please enter a valid date, guest count, and budget.", 400)
+
+    try:
+        event_service().update_event(event_id, form.get("event_type", ""), event_date, guest_count, budget)
+    except ValueError as error:
+        return show_edit_form(event_id, form, str(error), 400)
+
+    return redirect(url_for("events.show_event", event_id=event_id))
