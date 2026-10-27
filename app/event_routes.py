@@ -1,17 +1,13 @@
 from datetime import date
 
-from flask import Blueprint, current_app, redirect, render_template, request, url_for
+from flask import Blueprint, current_app, redirect, render_template, url_for
 
+from .forms import EVENT_TYPE_LABELS, EventForm
 from .services.event_service import EventService
 
 bp = Blueprint("events", __name__, url_prefix="/events")
 
-EVENT_TYPE_LABELS = {
-    "bar_mitzvah": "Bar mitzvah",
-    "bat_mitzvah": "Bat mitzvah",
-    "vort": "Vort",
-    "sheva_brachos": "Sheva brachos",
-}
+INVALID_INPUT = "Please enter a valid date, guest count, and budget."
 
 
 def event_service() -> EventService:
@@ -26,27 +22,23 @@ def list_events():
 
 def show_form(form, error=None, status=200):
     """Show the form, with an error message and the values the host already typed."""
-    html = render_template("events/new.html", labels=EVENT_TYPE_LABELS, form=form, error=error)
-    return html, status
+    return render_template("events/new.html", form=form, error=error), status
 
 
 @bp.get("/new")
 def new_event():
-    return show_form({})
+    return show_form(EventForm())
 
 
 @bp.post("")
 def create_event():
-    form = request.form
-    try:
-        event_date = date.fromisoformat(form["event_date"])
-        guest_count = int(form["guest_count"])
-        budget = float(form["budget"])
-    except (KeyError, ValueError):
-        return show_form(form, "Please enter a valid date, guest count, and budget.", 400)
+    form = EventForm()
+    if not form.validate():
+        return show_form(form, INVALID_INPUT, 400)
 
     try:
-        event = event_service().create_event(form.get("event_type", ""), event_date, guest_count, budget)
+        event = event_service().create_event(form.event_type.data, form.event_date.data,
+                                             form.guest_count.data, form.budget.data)
     except ValueError as error:
         return show_form(form, str(error), 400)
 
@@ -65,9 +57,7 @@ def show_event(event_id):
 
 def show_edit_form(event_id, form, error=None, status=200):
     """Show the edit form, filled in with the event's current values or what the host typed."""
-    html = render_template("events/edit.html", labels=EVENT_TYPE_LABELS, event_id=event_id, form=form,
-                           error=error)
-    return html, status
+    return render_template("events/edit.html", event_id=event_id, form=form, error=error), status
 
 
 @bp.get("/<int:event_id>/edit")
@@ -75,12 +65,7 @@ def edit_event(event_id):
     event = event_service().get_event(event_id)
     if event is None:
         return render_template("events/not_found.html"), 404
-    return show_edit_form(event_id, {
-        "event_type": event.event_type,
-        "event_date": event.event_date.isoformat(),
-        "guest_count": event.guest_count,
-        "budget": event.budget,
-    })
+    return show_edit_form(event_id, EventForm(obj=event))
 
 
 @bp.post("/<int:event_id>/edit")
@@ -88,16 +73,13 @@ def update_event(event_id):
     if event_service().get_event(event_id) is None:
         return render_template("events/not_found.html"), 404
 
-    form = request.form
-    try:
-        event_date = date.fromisoformat(form["event_date"])
-        guest_count = int(form["guest_count"])
-        budget = float(form["budget"])
-    except (KeyError, ValueError):
-        return show_edit_form(event_id, form, "Please enter a valid date, guest count, and budget.", 400)
+    form = EventForm()
+    if not form.validate():
+        return show_edit_form(event_id, form, INVALID_INPUT, 400)
 
     try:
-        event_service().update_event(event_id, form.get("event_type", ""), event_date, guest_count, budget)
+        event_service().update_event(event_id, form.event_type.data, form.event_date.data,
+                                     form.guest_count.data, form.budget.data)
     except ValueError as error:
         return show_edit_form(event_id, form, str(error), 400)
 

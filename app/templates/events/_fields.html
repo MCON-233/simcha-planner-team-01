@@ -1,15 +1,13 @@
-<label for="event_type">Type of simcha</label>
-<select id="event_type" name="event_type" required>
-  {% for value, label in labels.items() %}
-    <option value="{{ value }}" {% if form.get('event_type') == value %}selected{% endif %}>{{ label }}</option>
+{% macro field(f) %}
+  {{ f.label }}
+  {{ f(**kwargs) }}
+  {% for message in f.errors %}
+    <p class="field-error">{{ message }}</p>
   {% endfor %}
-</select>
+{% endmacro %}
 
-<label for="event_date">Date</label>
-<input id="event_date" name="event_date" type="date" value="{{ form.get('event_date', '') }}" required />
-
-<label for="guest_count">Number of guests</label>
-<input id="guest_count" name="guest_count" type="number" min="1" value="{{ form.get('guest_count', '') }}" required />
-
-<label for="budget">Budget ($)</label>
-<input id="budget" name="budget" type="number" min="0" step="0.01" value="{{ form.get('budget', '') }}" required />
+{{ form.csrf_token }}
+{{ field(form.event_type) }}
+{{ field(form.event_date) }}
+{{ field(form.guest_count, min=1) }}
+{{ field(form.budget, min=0, step="0.01") }}

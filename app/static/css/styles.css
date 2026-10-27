@@ -317,3 +317,9 @@ textarea:focus-visible,
   border-left: 0.35rem solid #a72e20;
   background: #ffebe7;
 }
+
+.field-error {
+  margin: -0.6rem 0 0.8rem;
+  color: #a72e20;
+  font-size: 0.9rem;
+}

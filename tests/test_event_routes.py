@@ -1,5 +1,7 @@
 from datetime import date, timedelta
 
+from app import create_app
+
 
 def future(days=10):
     return date.today() + timedelta(days=days)
@@ -252,3 +254,20 @@ def test_missing_field_on_edit_changes_nothing(client, service):
 
     assert response.status_code == 400
     assert service.get_event(event.id).guest_count == 50
+
+
+# Forms are protected against cross-site requests
+
+def test_form_includes_a_csrf_token():
+    client = create_app({"TESTING": True}).test_client()
+
+    assert 'name="csrf_token"' in client.get("/events/new").get_data(as_text=True)
+
+
+def test_post_without_a_csrf_token_is_rejected_and_saves_nothing():
+    app = create_app({"TESTING": True})
+
+    response = app.test_client().post("/events", data=valid_form())
+
+    assert response.status_code == 400
+    assert app.extensions["event_service"].list_events() == []
