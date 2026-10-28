@@ -8,6 +8,7 @@ from app.db import db
 
 from .repositories.event_repository import EventRepository
 from .repositories.in_memory_event_repository import InMemoryEventRepository
+from .repositories.sqlalchemy_event_repository import SqlAlchemyEventRepository
 from .services.event_service import EventService
 
 
@@ -32,7 +33,10 @@ def create_app(test_config: Mapping[str, Any] | None = None,
 
     # The one place that chooses the repository implementation.
     if repository is None:
-        repository = InMemoryEventRepository()
+        if app.config.get("TESTING"):
+            repository = InMemoryEventRepository()   # a test can never touch the real database by accident
+        else:
+            repository = SqlAlchemyEventRepository()
     app.extensions["event_service"] = EventService(repository)
 
     from .event_routes import bp as events_bp
