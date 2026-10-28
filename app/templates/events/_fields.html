@@ -1,0 +1,13 @@
+{% macro field(f) %}
+  {{ f.label }}
+  {{ f(**kwargs) }}
+  {% for message in f.errors %}
+    <p class="field-error">{{ message }}</p>
+  {% endfor %}
+{% endmacro %}
+
+{{ form.csrf_token }}
+{{ field(form.event_type) }}
+{{ field(form.event_date) }}
+{{ field(form.guest_count, min=1) }}
+{{ field(form.budget, min=0, step="0.01") }}

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}My events | Simcha Planner{% endblock %}
+
+{% block content %}
+  <section class="section" aria-labelledby="events-heading">
+    <div class="container">
+      <h1 id="events-heading">My events</h1>
+      {% if events %}
+        <ul class="card-grid">
+          {% for event in events %}
+            <li class="card">
+              <h2><a href="{{ url_for('events.show_event', event_id=event.id) }}">{{ labels[event.event_type] }}</a></h2>
+              <p>{{ event.event_date.strftime('%B') }} {{ event.event_date.day }}, {{ event.event_date.year }} &middot; {{ event.guest_count }} guests</p>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p>You have no events yet.</p>
+      {% endif %}
+    </div>
+  </section>
+{% endblock %}

@@ -9,13 +9,37 @@
   <body>
     <a class="skip-link" href="#main-content">Skip to main content</a>
     <header class="site-header">
-      <a class="site-name" href="{{ url_for('main.index') }}">Simcha Planner</a>
+      <div class="container header-inner">
+        <a class="site-name" href="{{ url_for('main.index') }}">Simcha Planner</a>
+        <nav aria-label="Primary">
+          <ul class="nav-list">
+            <li><a href="{{ url_for('main.index') }}#features">Features</a></li>
+            <li><a href="{{ url_for('main.index') }}#simchas">Simchas</a></li>
+            <li><a href="{{ url_for('main.index') }}#get-started">Get started</a></li>
+            <li><a href="{{ url_for('events.list_events') }}">My events</a></li>
+            <li><a href="{{ url_for('events.new_event') }}">Create an event</a></li>
+          </ul>
+        </nav>
+      </div>
     </header>
     <main id="main-content" tabindex="-1">
       {% block content %}{% endblock %}
     </main>
-    <footer>
-      <small>MCON-233 team project</small>
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <div>
+          <p class="footer-brand">Simcha Planner</p>
+          <p>Organize every detail of your simcha in one place.</p>
+        </div>
+        <nav aria-label="Footer">
+          <ul class="nav-list">
+            <li><a href="{{ url_for('main.index') }}#features">Features</a></li>
+            <li><a href="{{ url_for('main.index') }}#simchas">Simchas</a></li>
+            <li><a href="{{ url_for('main.index') }}#get-started">Get started</a></li>
+          </ul>
+        </nav>
+        <p class="footer-note"><small>MCON-233 Team One project</small></p>
+      </div>
     </footer>
   </body>
 </html>
