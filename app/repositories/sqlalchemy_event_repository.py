@@ -44,6 +44,11 @@ class SqlAlchemyEventRepository(EventRepository):
         models = db.session.scalars(db.select(EventModel).order_by(EventModel.id))
         return [to_event(model) for model in models]
 
-    # Temporary stub. Subtask 4 replaces it with the real update.
     def update(self, event_id, event):
-        raise NotImplementedError("Subtask 4")
+        model = db.session.get(EventModel, event_id)
+        if model is None:
+            return None
+        copy_to_model(event, model)
+        db.session.commit()
+        event.id = event_id
+        return event
