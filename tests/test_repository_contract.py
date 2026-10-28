@@ -12,7 +12,7 @@ from app.domain.event import Event
 from app.repositories.in_memory_event_repository import InMemoryEventRepository
 
 READING = ["in_memory", "sqlalchemy"]    # Subtask 3 adds "sqlalchemy"
-CHANGING = ["in_memory"]   # Subtask 4 adds "sqlalchemy"
+CHANGING = ["in_memory", "sqlalchemy"]   # Subtask 4 adds "sqlalchemy"
 
 
 def build(kind):
