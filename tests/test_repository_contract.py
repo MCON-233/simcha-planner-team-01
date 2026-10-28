@@ -11,7 +11,7 @@ from app.db import db
 from app.domain.event import Event
 from app.repositories.in_memory_event_repository import InMemoryEventRepository
 
-READING = ["in_memory"]    # Subtask 3 adds "sqlalchemy"
+READING = ["in_memory", "sqlalchemy"]    # Subtask 3 adds "sqlalchemy"
 CHANGING = ["in_memory"]   # Subtask 4 adds "sqlalchemy"
 
 
