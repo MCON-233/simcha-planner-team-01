@@ -4,6 +4,8 @@ from typing import Any
 
 from flask import Flask
 
+from app.db import db
+
 from .repositories.event_repository import EventRepository
 from .repositories.in_memory_event_repository import InMemoryEventRepository
 from .services.event_service import EventService
@@ -18,6 +20,15 @@ def create_app(test_config: Mapping[str, Any] | None = None,
 
     if test_config is not None:
         app.config.from_mapping(test_config)
+
+    app.config.setdefault(
+        "SQLALCHEMY_DATABASE_URI",
+        os.getenv("DATABASE_URL", "sqlite:///simcha.db"),
+    )
+    db.init_app(app)
+    with app.app_context():
+        from app.models import event_model  # noqa: F401  registers the events table
+        db.create_all()
 
     # The one place that chooses the repository implementation.
     if repository is None:
