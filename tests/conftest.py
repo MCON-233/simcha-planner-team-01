@@ -11,7 +11,11 @@ def repo():
 
 @pytest.fixture
 def app(repo):
-    return create_app({"TESTING": True, "WTF_CSRF_ENABLED": False}, repository=repo)
+    return create_app({
+        "TESTING": True,
+        "WTF_CSRF_ENABLED": False,
+        "SQLALCHEMY_DATABASE_URI": "sqlite:///:memory:",
+    }, repository=repo)
 
 
 @pytest.fixture
