@@ -1,7 +1,7 @@
 import pytest
 
 from app import create_app
-from app.repositories.event_repository import InMemoryEventRepository
+from app.repositories.in_memory_event_repository import InMemoryEventRepository
 
 
 @pytest.fixture

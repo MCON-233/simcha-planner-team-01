@@ -2,7 +2,7 @@ from datetime import date, timedelta
 
 import pytest
 
-from app.repositories.event_repository import InMemoryEventRepository
+from app.repositories.in_memory_event_repository import InMemoryEventRepository
 from app.services.event_service import EventService
 
 
