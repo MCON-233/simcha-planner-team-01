@@ -20,6 +20,5 @@ class EventService:
         if self.get_event(event_id) is None:
             return None
         event = Event(event_type, event_date, guest_count, budget)   # rules: the Event's job
-        event.id = event_id
-        return self._repository.update(event)
+        return self._repository.update(event_id, event)              # storage: the repository's job
 

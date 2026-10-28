@@ -3,7 +3,8 @@ from datetime import date, timedelta
 import pytest
 
 from app.domain.event import Event
-from app.repositories.event_repository import EventRepository, InMemoryEventRepository
+from app.repositories.event_repository import EventRepository
+from app.repositories.in_memory_event_repository import InMemoryEventRepository
 
 
 @pytest.fixture
@@ -52,9 +53,14 @@ def test_a_repository_must_implement_every_method():
 def test_update_replaces_the_saved_event(repo, event):
     saved = repo.add(event)
     changed = Event("bat_mitzvah", date.today() + timedelta(days=60), guest_count=40, budget=0)
-    changed.id = saved.id
 
-    repo.update(changed)
+    repo.update(saved.id, changed)
 
     assert repo.get(saved.id) is changed
+    assert changed.id == saved.id
     assert repo.all() == [changed]
+
+
+def test_update_returns_none_for_an_unknown_id(repo, event):
+    assert repo.update(999, event) is None
+    assert repo.all() == []
