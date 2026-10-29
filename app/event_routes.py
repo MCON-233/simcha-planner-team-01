@@ -2,6 +2,7 @@ from datetime import date
 
 from flask import Blueprint, current_app, redirect, render_template, url_for
 
+from .ai.ai_provider import AIProviderError
 from .forms import EVENT_TYPE_LABELS, EventForm, SuggestIdeasForm
 from .services.event_service import EventService
 
@@ -62,8 +63,20 @@ def show_event(event_id):
 
 @bp.post("/<int:event_id>/ideas")
 def suggest_ideas(event_id):
-    # Subtask C replaces this with the real ideas. For now the button just comes back to the page.
-    return redirect(url_for("events.show_event", event_id=event_id))
+    event = event_service().get_event(event_id)
+    if event is None:
+        return render_template("events/not_found.html"), 404
+
+    if not SuggestIdeasForm().validate():   # only the CSRF token to check
+        return show_event_page(event), 400
+
+    try:
+        ideas = current_app.extensions["idea_service"].suggest_ideas(event_id)
+    except AIProviderError:
+        current_app.logger.exception("AI ideas failed for event %s", event_id)
+        return show_event_page(event, ai_error="Ideas are not available right now. Please try again later.")
+
+    return show_event_page(event, ideas=ideas)
 
 
 

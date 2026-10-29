@@ -6,14 +6,20 @@ from flask import Flask
 
 from app.db import db
 
+from .ai.ai_provider import AIProvider
+from .ai.fake_ai_provider import FakeAIProvider
+from .ai.openai_provider import OpenAIProvider
+
 from .repositories.event_repository import EventRepository
 from .repositories.in_memory_event_repository import InMemoryEventRepository
 from .repositories.sqlalchemy_event_repository import SqlAlchemyEventRepository
 from .services.event_service import EventService
+from .services.idea_service import IdeaService
 
 
 def create_app(test_config: Mapping[str, Any] | None = None,
-               repository: EventRepository | None = None) -> Flask:
+               repository: EventRepository | None = None,
+               ai_provider: AIProvider | None = None) -> Flask:
     """Create and configure the Flask application."""
     app = Flask(__name__)
     # Signs the CSRF tokens Flask-WTF puts in every form. Set SECRET_KEY in production.
@@ -38,6 +44,18 @@ def create_app(test_config: Mapping[str, Any] | None = None,
         else:
             repository = SqlAlchemyEventRepository()
     app.extensions["event_service"] = EventService(repository)
+
+    # The one place that chooses which AI the app talks to.
+    if ai_provider is None:
+        if app.config.get("TESTING"):
+            ai_provider = FakeAIProvider()   # tests never make a paid call
+        else:
+            ai_provider = OpenAIProvider(
+                api_key=os.getenv("OPENAI_API_KEY"),
+                model=os.getenv("OPENAI_MODEL", "gpt-5.6-luna"),
+            )
+    app.extensions["ai_provider"] = ai_provider
+    app.extensions["idea_service"] = IdeaService(repository, ai_provider)
 
     from .event_routes import bp as events_bp
     from .routes import bp
