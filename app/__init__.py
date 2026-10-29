@@ -22,10 +22,10 @@ def create_app(test_config: Mapping[str, Any] | None = None,
                repository: EventRepository | None = None,
                ai_provider: AIProvider | None = None) -> Flask:
     """Create and configure the Flask application."""
-    load_dotenv()   # copies OPENAI_API_KEY and the other settings from .env into os.environ
     app = Flask(__name__)
     # Signs the CSRF tokens Flask-WTF puts in every form. Set SECRET_KEY in production.
     app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "dev")
+    load_dotenv()
 
     if test_config is not None:
         app.config.from_mapping(test_config)
