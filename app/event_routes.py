@@ -2,7 +2,7 @@ from datetime import date
 
 from flask import Blueprint, current_app, redirect, render_template, url_for
 
-from .forms import EVENT_TYPE_LABELS, EventForm
+from .forms import EVENT_TYPE_LABELS, EventForm, SuggestIdeasForm
 from .services.event_service import EventService
 
 bp = Blueprint("events", __name__, url_prefix="/events")
@@ -45,13 +45,25 @@ def create_event():
     return redirect(url_for("events.show_event", event_id=event.id))
 
 
+def show_event_page(event, ideas=None, ai_error=None):
+    """The event page, optionally with AI ideas or a friendly message that there are none."""
+    return render_template("events/show.html", event=event, label=EVENT_TYPE_LABELS[event.event_type],
+                           days_left=event.days_until_event(date.today()), ideas_form=SuggestIdeasForm(),
+                           ideas=ideas, ai_error=ai_error)
+
+
 @bp.get("/<int:event_id>")
 def show_event(event_id):
     event = event_service().get_event(event_id)
     if event is None:
         return render_template("events/not_found.html"), 404
-    return render_template("events/show.html", event=event, label=EVENT_TYPE_LABELS[event.event_type],
-                           days_left=event.days_until_event(date.today()))
+    return show_event_page(event)
+
+
+@bp.post("/<int:event_id>/ideas")
+def suggest_ideas(event_id):
+    # Subtask C replaces this with the real ideas. For now the button just comes back to the page.
+    return redirect(url_for("events.show_event", event_id=event_id))
 
 
 

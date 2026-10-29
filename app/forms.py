@@ -19,3 +19,7 @@ class EventForm(FlaskForm):
     event_date = DateField("Date", validators=[InputRequired()])
     guest_count = IntegerField("Number of guests", validators=[InputRequired()])
     budget = FloatField("Budget ($)", validators=[InputRequired()])
+
+
+class SuggestIdeasForm(FlaskForm):
+    """No fields: it only carries the CSRF token for the Suggest ideas button."""

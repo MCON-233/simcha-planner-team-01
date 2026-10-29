@@ -13,6 +13,21 @@
         <dt>Budget</dt><dd>${{ '{:,.2f}'.format(event.budget) }}</dd>
       </dl>
       <p><a class="button" href="{{ url_for('events.edit_event', event_id=event.id) }}">Edit event</a></p>
+      <form method="post" action="{{ url_for('events.suggest_ideas', event_id=event.id) }}">
+        {{ ideas_form.hidden_tag() }}
+        <button class="button" type="submit">Suggest ideas</button>
+      </form>
+      {% if ai_error %}
+        <p class="form-error" role="alert">{{ ai_error }}</p>
+      {% endif %}
+      {% if ideas %}
+        <h2>Ideas for your {{ label|lower }}</h2>
+        <ol class="ideas">
+          {% for idea in ideas %}
+            <li>{{ idea }}</li>
+          {% endfor %}
+        </ol>
+      {% endif %}
       <p><a href="{{ url_for('events.list_events') }}">All my events</a></p>
     </div>
   </section>
