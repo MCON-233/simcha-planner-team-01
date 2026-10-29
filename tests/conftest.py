@@ -1,6 +1,7 @@
 import pytest
 
 from app import create_app
+from app.ai.fake_ai_provider import FakeAIProvider
 from app.repositories.in_memory_event_repository import InMemoryEventRepository
 
 
@@ -10,12 +11,17 @@ def repo():
 
 
 @pytest.fixture
-def app(repo):
+def ai():
+    return FakeAIProvider()   # tests never make a paid call
+
+
+@pytest.fixture
+def app(repo, ai):
     return create_app({
         "TESTING": True,
         "WTF_CSRF_ENABLED": False,
         "SQLALCHEMY_DATABASE_URI": "sqlite:///:memory:",
-    }, repository=repo)
+    }, repository=repo, ai_provider=ai)
 
 
 @pytest.fixture
