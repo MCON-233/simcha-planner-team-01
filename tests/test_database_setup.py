@@ -8,3 +8,8 @@ def test_tests_use_an_in_memory_database(app):
 def test_the_events_table_exists(app):
     with app.app_context():
         assert db.inspect(db.engine).has_table("events")
+
+
+def test_the_checklist_items_table_exists(app):
+    with app.app_context():
+        assert db.inspect(db.engine).has_table("checklist_items")

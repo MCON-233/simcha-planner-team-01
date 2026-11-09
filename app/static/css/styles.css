@@ -323,3 +323,40 @@ textarea:focus-visible,
   color: #a72e20;
   font-size: 0.9rem;
 }
+
+/* Checklist */
+.checklist {
+  margin: 2rem 0;
+}
+
+.checklist-items {
+  margin: 0 0 1.5rem;
+  padding: 0;
+  list-style: none;
+}
+
+.checklist-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.checklist-item form {
+  margin: 0;
+}
+
+.checklist-item.done .checklist-title {
+  color: var(--muted-ink);
+  text-decoration: line-through;
+}
+
+.button-small {
+  padding: 0.3rem 0.8rem;
+  border: 0;
+  font-size: 0.9rem;
+  cursor: pointer;
+}

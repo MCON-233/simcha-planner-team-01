@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import DateField, FloatField, IntegerField, SelectChoice, SelectField
+from wtforms import DateField, FloatField, IntegerField, SelectChoice, SelectField, StringField
 from wtforms.validators import InputRequired
 
 EVENT_TYPE_LABELS = {
@@ -23,3 +23,13 @@ class EventForm(FlaskForm):
 
 class SuggestIdeasForm(FlaskForm):
     """No fields: it only carries the CSRF token for the Suggest ideas button."""
+
+
+class ChecklistItemForm(FlaskForm):
+    """Reads the new item's title. The rules for a valid title stay in ChecklistItem."""
+
+    title = StringField("New item")
+
+
+class ToggleItemForm(FlaskForm):
+    """No fields: it only carries the CSRF token for an item's done / not done button."""

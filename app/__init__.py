@@ -11,16 +11,21 @@ from .ai.ai_provider import AIProvider
 from .ai.fake_ai_provider import FakeAIProvider
 from .ai.openai_provider import OpenAIProvider
 
+from .repositories.checklist_repo import ChecklistRepository
 from .repositories.event_repository import EventRepository
+from .repositories.in_memory_checklist_repo import InMemoryChecklistRepository
 from .repositories.in_memory_event_repository import InMemoryEventRepository
+from .repositories.sqlalchemy_checklist_repository import SqlAlchemyChecklistRepository
 from .repositories.sqlalchemy_event_repository import SqlAlchemyEventRepository
+from .services.checklist_service import ChecklistService
 from .services.event_service import EventService
 from .services.idea_service import IdeaService
 
 
 def create_app(test_config: Mapping[str, Any] | None = None,
                repository: EventRepository | None = None,
-               ai_provider: AIProvider | None = None) -> Flask:
+               ai_provider: AIProvider | None = None,
+               checklist_repository: ChecklistRepository | None = None) -> Flask:
     """Create and configure the Flask application."""
     app = Flask(__name__)
     # Signs the CSRF tokens Flask-WTF puts in every form. Set SECRET_KEY in production.
@@ -37,6 +42,7 @@ def create_app(test_config: Mapping[str, Any] | None = None,
     db.init_app(app)
     with app.app_context():
         from app.models import event_model  # noqa: F401  registers the events table
+        from app.models import checklist_item_model  # noqa: F401  registers the checklist_items table
         db.create_all()
 
     # The one place that chooses the repository implementation.
@@ -46,6 +52,13 @@ def create_app(test_config: Mapping[str, Any] | None = None,
         else:
             repository = SqlAlchemyEventRepository()
     app.extensions["event_service"] = EventService(repository)
+
+    if checklist_repository is None:
+        if app.config.get("TESTING"):
+            checklist_repository = InMemoryChecklistRepository()   # same rule as events: tests stay off the database
+        else:
+            checklist_repository = SqlAlchemyChecklistRepository()
+    app.extensions["checklist_service"] = ChecklistService(checklist_repository, repository)
 
     # The one place that chooses which AI the app talks to.
     if ai_provider is None:

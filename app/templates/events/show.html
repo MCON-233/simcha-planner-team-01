@@ -34,6 +34,35 @@
           {% endfor %}
         </ol>
       {% endif %}
+      <section class="checklist" aria-labelledby="checklist-heading">
+        <h2 id="checklist-heading">Checklist</h2>
+        {% if checklist %}
+          <ul class="checklist-items">
+            {% for item in checklist %}
+              <li class="checklist-item{% if item.done %} done{% endif %}">
+                <span class="checklist-title">{{ item.title }}</span>
+                <form method="post" action="{{ url_for('events.toggle_checklist_item', event_id=event.id, item_id=item.id) }}">
+                  {{ toggle_form.hidden_tag() }}
+                  <button class="button button-small" type="submit" aria-label="{{ 'Mark not done' if item.done else 'Mark done' }}: {{ item.title }}">
+                    {{ 'Mark not done' if item.done else 'Mark done' }}
+                  </button>
+                </form>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p>No checklist items yet.</p>
+        {% endif %}
+        {% if checklist_error %}
+          <p class="form-error" role="alert">{{ checklist_error }}</p>
+        {% endif %}
+        <form class="event-form" method="post" action="{{ url_for('events.add_checklist_item', event_id=event.id) }}">
+          {{ checklist_form.hidden_tag() }}
+          {{ checklist_form.title.label }}
+          {{ checklist_form.title(maxlength=200, required=True) }}
+          <button class="button" type="submit">Add item</button>
+        </form>
+      </section>
       <p><a href="{{ url_for('events.list_events') }}">All my events</a></p>
     </div>
   </section>

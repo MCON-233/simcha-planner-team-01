@@ -47,3 +47,19 @@ def test_saved_events_still_load_after_their_date_passes(tmp_path):
         service = app.extensions["event_service"]
         assert service.get_event(row.id).event_date == date.today() - timedelta(days=3)
         assert len(service.list_events()) == 1
+
+
+def test_checklist_items_survive_a_restart(tmp_path):
+    database = f"sqlite:///{tmp_path / 'simcha.db'}"
+
+    first_run = create_app({"SQLALCHEMY_DATABASE_URI": database})
+    with first_run.app_context():
+        event = first_run.extensions["event_service"].create_event("vort", date.today() + timedelta(days=30), 80, 5000)
+        checklist = first_run.extensions["checklist_service"]
+        item = checklist.add_item(event.id, "Book venue")
+        checklist.toggle_item(event.id, item.id)
+
+    second_run = create_app({"SQLALCHEMY_DATABASE_URI": database})
+    with second_run.app_context():
+        items = second_run.extensions["checklist_service"].items_for_event(event.id)
+        assert [(i.title, i.done) for i in items] == [("Book venue", True)]
