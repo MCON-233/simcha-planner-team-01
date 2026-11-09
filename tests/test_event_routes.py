@@ -271,3 +271,41 @@ def test_post_without_a_csrf_token_is_rejected_and_saves_nothing():
 
     assert response.status_code == 400
     assert app.extensions["event_service"].list_events() == []
+
+
+# Events whose date has passed
+
+def add_saved_event(repo, event_date):
+    from app.domain.event import Event
+    return repo.add(Event.restore(None, "vort", event_date, guest_count=50, budget=1000))
+
+
+def test_past_event_page_says_it_has_passed(client, repo):
+    event = add_saved_event(repo, date.today() - timedelta(days=3))
+
+    response = client.get(f"/events/{event.id}")
+    html = response.get_data(as_text=True)
+
+    assert response.status_code == 200
+    assert "This event has passed" in html
+    assert "days to go" not in html
+
+
+def test_event_page_on_the_day_says_today(client, repo):
+    event = add_saved_event(repo, date.today())
+
+    html = client.get(f"/events/{event.id}").get_data(as_text=True)
+
+    assert "Today is the day" in html
+    assert "days to go" not in html
+
+
+def test_events_page_marks_past_events(client, repo, service):
+    add_saved_event(repo, date.today() - timedelta(days=3))
+    service.create_event("vort", future(), guest_count=50, budget=1000)
+
+    response = client.get("/events")
+    html = response.get_data(as_text=True)
+
+    assert response.status_code == 200
+    assert html.count("Past event") == 1

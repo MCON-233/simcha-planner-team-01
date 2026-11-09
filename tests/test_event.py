@@ -93,3 +93,27 @@ def test_days_until_event_matches_date_subtraction():
     event = Event("bar_mitzvah", future(45), guest_count=120, budget=15000)
 
     assert event.days_until_event() == (event.event_date - date.today()).days
+
+
+# Saved events whose date has since passed
+
+def past(days=3):
+    return date.today() - timedelta(days=days)
+
+
+def test_restore_accepts_a_date_that_has_passed():
+    event = Event.restore(7, "vort", past(), guest_count=50, budget=1000)
+
+    assert event.id == 7
+    assert event.event_date == past()
+
+
+def test_restore_still_checks_the_other_rules():
+    with pytest.raises(ValueError, match="Guest count must be at least 1"):
+        Event.restore(7, "vort", past(), guest_count=0, budget=1000)
+
+
+def test_event_is_past_once_its_date_has_gone_by():
+    assert Event.restore(1, "vort", past(1), guest_count=50, budget=1000).is_past()
+    assert not Event.restore(1, "vort", date.today(), guest_count=50, budget=1000).is_past()
+    assert not Event("vort", future(), guest_count=50, budget=1000).is_past()

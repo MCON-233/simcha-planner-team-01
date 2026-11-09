@@ -5,10 +5,11 @@ from app.repositories.event_repository import EventRepository
 
 
 def to_event(model):
-    """EventModel (a database row) -> Event (what the rest of the app uses)."""
-    event = Event(model.event_type, model.event_date, model.guest_count, model.budget)
-    event.id = model.id
-    return event
+    """EventModel (a database row) -> Event (what the rest of the app uses).
+
+    Uses Event.restore, so an event still loads after its date has passed.
+    """
+    return Event.restore(model.id, model.event_type, model.event_date, model.guest_count, model.budget)
 
 
 def copy_to_model(event, model):

@@ -5,7 +5,13 @@
 {% block content %}
   <section class="section" aria-labelledby="event-heading">
     <div class="container">
-      <p class="eyebrow">{{ days_left }} days to go</p>
+      {% if days_left > 0 %}
+        <p class="eyebrow">{{ days_left }} days to go</p>
+      {% elif days_left == 0 %}
+        <p class="eyebrow">Today is the day!</p>
+      {% else %}
+        <p class="eyebrow">This event has passed</p>
+      {% endif %}
       <h1 id="event-heading">{{ label }}</h1>
       <dl class="event-details">
         <dt>Date</dt><dd>{{ event.event_date.strftime('%B') }} {{ event.event_date.day }}, {{ event.event_date.year }}</dd>
