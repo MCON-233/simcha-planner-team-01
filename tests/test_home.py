@@ -33,3 +33,9 @@ def test_home_page_has_content_sections(client: FlaskClient) -> None:
     assert "Start Planning" in html
     for section_id in ("features", "simchas", "get-started"):
         assert f'id="{section_id}"' in html
+
+
+def test_start_planning_opens_the_create_event_page(client: FlaskClient) -> None:
+    html = client.get("/").get_data(as_text=True)
+
+    assert '<a class="button" href="/events/new">Start Planning</a>' in html

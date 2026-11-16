@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Create an event | Simcha Planner{% endblock %}
+
+{% block content %}
+  <section class="section" aria-labelledby="new-event-heading">
+    <div class="container">
+      <h1 id="new-event-heading">Create an event</h1>
+      {% if error %}
+        <p class="form-error" role="alert">{{ error }}</p>
+      {% endif %}
+      <form class="event-form" method="post" action="{{ url_for('events.create_event') }}">
+        {% include "events/_fields.html" %}
+
+        <button class="button" type="submit">Create event</button>
+      </form>
+    </div>
+  </section>
+{% endblock %}
